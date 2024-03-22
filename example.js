@@ -1,10 +1,6 @@
-const winds = require('./index')
+const winds = require("lib/index.js");
 
-winds
-  .FD1({
-    location: 'AK1',
-    issuanceTimeFrom: new Date('2019-09-06T13:36:00+00:00')
-  })
-  .then(result => {
-    console.log(JSON.stringify(result, null, 2))
-  })
+console.log(winds);
+winds.FD1().then((result) => {
+  console.log(JSON.stringify(result, null, 2));
+});
