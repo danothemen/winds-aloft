@@ -79,7 +79,11 @@ const parseWind = (element: string) => {
 /**
  * Given a winds aloft element, parse both wind values and temperature
  */
-const parseElement = (element: string) => ({
+interface ParsedElement {
+  windDirectionDegrees: null | string | number;
+  windSpeedKnots: null | string | number;
+}
+const parseElement = (element: string): ParsedElement => ({
   ...parseWind(element),
   ...parseTemp(element),
 });
@@ -188,7 +192,14 @@ const parseHeaderBlock = (
  * Given the entire product text of the winds aloft forecast, parse the header
  * block information and actual values contained in the forecast.
  */
-const parseProductText = (productText: String, issuanceTime: any) => {
+interface ParsedProductText {
+  header: ParsedHeaderBlock;
+  data: Map<string, ParsedElement>;
+}
+const parseProductText = (
+  productText: String,
+  issuanceTime: any
+): ParsedProductText => {
   const rows = productText.split("\n");
 
   const dataBlockRowIndex = rows.findIndex((r) => r.match(/^FT /g));
@@ -233,7 +244,18 @@ const buildUtcTime = (
  * and return a structured version of the data.
  */
 
-const getProductById = async (id: string) => {
+interface ParsedProduct {
+  id: string;
+  wmoCollectiveId: string;
+  issuingOffice: string;
+  issuanceTime: string;
+  productCode: string;
+  productName: string;
+  productText: string;
+  parsedProductText: ParsedProductText;
+}
+
+const getProductById = async (id: string): Promise<ParsedProduct | null> => {
   const product = await fetch(`/products/${id}`);
 
   if (product === undefined) {
@@ -283,7 +305,7 @@ export const getWindsAloft = async (
     issuanceTimeFrom,
     issuanceTimeTo = new Date(),
   }: GetWindsAloftOptions
-) => {
+): Promise<Array<ParsedProduct>> => {
   let products;
   if (location) {
     const { "@graph": graph } = await fetch(

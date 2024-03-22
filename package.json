@@ -1,18 +1,16 @@
 {
   "name": "@naviaero/winds-aloft",
   "description": "Get Winds and Temps Aloft data from https://api.weather.gov. A typed fork of @faa-aviation-data-portal/winds-aloft.",
-  "version": "1.0.0",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "version": "1.0.6",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "author": {
     "name": "Daniel O'Loughlin",
     "email": "dwo76@live.com",
     "url": "https://github.com/danothemen"
   },
   "dependencies": {
-    "axios": "^1.6.7"
-  },
-  "devDependencies": {
+    "axios": "^1.6.7",
     "@types/node": "^20.11.27",
     "typescript": "^5.4.2"
   },
@@ -20,7 +18,8 @@
     "node": ">=18"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "keywords": [
     "winds",

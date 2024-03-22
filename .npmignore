@@ -1,0 +1,9 @@
+test
+node_modules
+.github
+.travis.yml
+example.js
+index.js
+index.ts
+package-lock.json
+tsconfig.json
