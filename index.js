@@ -101,10 +101,6 @@ const determineElementLocations = (headerRow) => {
     });
     return indices;
 };
-/**
- * Given the data section of the winds aloft forecast, starting with "FT",
- * determine the locations of the data elements and parse them into a JS object.
- */
 const parseDataBlock = (dataBlock) => {
     const [headerRow, ...data] = dataBlock;
     const elementLocations = determineElementLocations(headerRow);
@@ -112,14 +108,14 @@ const parseDataBlock = (dataBlock) => {
     for (const row of data) {
         const station = row.slice(0, 3);
         parsed.set(station, {});
-        Object.keys(elementLocations).map((k) => {
+        Array.from(elementLocations.keys()).map((k) => {
             if (Array.isArray(elementLocations.get(k))) {
                 const [start, end] = elementLocations.get(k);
                 parsed.get(station)[k] = parseElement(row.slice(start, end));
             }
         });
     }
-    return parsed;
+    return Object.fromEntries(parsed);
 };
 const parseHeaderBlock = (headerBlock, issuanceTime) => {
     const [wmoCollectiveId, issuingOffice, issuanceSeries] = headerBlock.find((row) => row.match(/^FB/g))?.split(" ") ?? [];

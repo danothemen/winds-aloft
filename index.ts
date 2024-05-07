@@ -116,7 +116,20 @@ const determineElementLocations = (headerRow: string) => {
  * Given the data section of the winds aloft forecast, starting with "FT",
  * determine the locations of the data elements and parse them into a JS object.
  */
-const parseDataBlock = (dataBlock: string[]) => {
+interface ParsedDataBlock {
+  [key: string]: {
+    "3000": ParsedElement;
+    "6000": ParsedElement;
+    "9000": ParsedElement;
+    "12000": ParsedElement;
+    "18000": ParsedElement;
+    "24000": ParsedElement;
+    "30000": ParsedElement;
+    "34000": ParsedElement;
+    "39000": ParsedElement;
+  };
+}
+const parseDataBlock = (dataBlock: string[]): ParsedDataBlock => {
   const [headerRow, ...data] = dataBlock;
 
   const elementLocations = determineElementLocations(headerRow);
@@ -125,7 +138,7 @@ const parseDataBlock = (dataBlock: string[]) => {
   for (const row of data) {
     const station = row.slice(0, 3);
     parsed.set(station, {});
-    Object.keys(elementLocations).map((k) => {
+    Array.from(elementLocations.keys()).map((k) => {
       if (Array.isArray(elementLocations.get(k))) {
         const [start, end] = elementLocations.get(k) as Array<number>;
         parsed.get(station)[k] = parseElement(row.slice(start, end));
@@ -133,7 +146,7 @@ const parseDataBlock = (dataBlock: string[]) => {
     });
   }
 
-  return parsed;
+  return Object.fromEntries(parsed) as ParsedDataBlock;
 };
 
 /**
@@ -194,14 +207,13 @@ const parseHeaderBlock = (
  */
 interface ParsedProductText {
   header: ParsedHeaderBlock;
-  data: Map<string, ParsedElement>;
+  data: ParsedDataBlock;
 }
 const parseProductText = (
   productText: String,
   issuanceTime: any
 ): ParsedProductText => {
   const rows = productText.split("\n");
-
   const dataBlockRowIndex = rows.findIndex((r) => r.match(/^FT /g));
   const headerBlock = rows
     .slice(0, dataBlockRowIndex)

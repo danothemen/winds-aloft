@@ -1,7 +1,7 @@
 {
   "name": "@naviaero/winds-aloft",
   "description": "Get Winds and Temps Aloft data from https://api.weather.gov. A typed fork of @faa-aviation-data-portal/winds-aloft.",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "main": "./index.js",
   "types": "./index.d.ts",
   "author": {
